@@ -9,15 +9,16 @@ public class Main {
         Bank bank = new Bank();
         boolean running = true;
         Scanner scanner = new Scanner(System.in);
+        System.out.println("1. Create an account");
+        System.out.println("2. Log into account");
+        System.out.println("0. Exit");
 
         while(running) {
-            System.out.println("1. Create an account");
-            System.out.println("2. Log into account");
-            System.out.println("0. Exit");
-            int input = scanner.nextInt();
+            String input = scanner.nextLine();
 
-            if(input == 0) {
+            if(input.equals("0")) {
                 running = false;
+                System.out.println("Bye!");
             } else {
                 System.out.println();
                 bank.input(input);
