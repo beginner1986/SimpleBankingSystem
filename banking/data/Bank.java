@@ -55,11 +55,7 @@ public class Bank {
         Card card = new Card();
         cards.add(card);
 
-        System.out.println("Your card has been created");
-        System.out.println("Your card number:");
-        System.out.println(card.getNumber());
-        System.out.println("Your card PIN:");
-        System.out.println(card.getPin());
+
     }
 
     private void login(String input) {
@@ -103,8 +99,7 @@ public class Bank {
         if(currentCardIndex == -1) {
             status = Status.MENU;
         } else {
-            String pin = cards.get(currentCardIndex).getPin();
-            if(pin.equals(input)) {
+            if(cards.get(currentCardIndex).checkPin(input)) {
                 status = Status.AUTHORIZED;
             } else {
                 status = Status.MENU;

@@ -11,6 +11,12 @@ class Card {
         this.number = generateCardNumber();
         this.pin = generatePin();
         this.balance = 0;
+
+        System.out.println("Your card has been created");
+        System.out.println("Your card number:");
+        System.out.println(this.number);
+        System.out.println("Your card PIN:");
+        System.out.println(this.pin);
     }
 
     private String generateCardNumber() {
@@ -33,15 +39,16 @@ class Card {
         return String.format("%04d", pin);
     }
 
-    public String getNumber() {
-        return number;
+    public boolean checkPin(String input) {
+        return this.pin.equals(input);
     }
 
-    public String getPin() {
-        return pin;
+    public String getNumber() {
+        return number;
     }
 
     public double getBalance() {
         return balance;
     }
+
 }
