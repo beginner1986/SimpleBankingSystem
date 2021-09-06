@@ -6,6 +6,15 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
+        String parameter = args[0];
+        if(!parameter.equals("-fileName")) {
+            System.out.println("Wrong parameter!");
+            System.out.println("Correct program parameters: -fileName database.db");
+            System.exit(0);
+        }
+
+        String databaseFile = args[1];
+
         Bank bank = new Bank();
         boolean running = true;
         Scanner scanner = new Scanner(System.in);
