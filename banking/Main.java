@@ -1,6 +1,7 @@
 package banking;
 
 import banking.data.Bank;
+import banking.database.Database;
 
 import java.util.Scanner;
 
@@ -13,7 +14,8 @@ public class Main {
             System.exit(0);
         }
 
-        String databaseFile = args[1];
+        String databaseUrl = "jdbc:sqlite:" + args[1];
+        Database db = new Database(databaseUrl);
 
         Bank bank = new Bank();
         boolean running = true;
