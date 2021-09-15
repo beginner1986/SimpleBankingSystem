@@ -96,7 +96,7 @@ public class Bank {
     private void operations(String input) {
         switch(input) {
             case "1":
-                System.out.printf("Balance: %f\n", currentCard.getBalance());
+                System.out.printf("Balance: %d\n", currentCard.getBalance());
                 break;
             case "2":
                 status = Status.MENU;

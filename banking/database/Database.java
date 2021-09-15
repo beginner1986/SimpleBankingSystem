@@ -3,10 +3,7 @@ package banking.database;
 import banking.data.Card;
 import org.sqlite.SQLiteDataSource;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class Database {
     private SQLiteDataSource dataSource;
@@ -23,11 +20,14 @@ public class Database {
     }
 
     public void insert(Card card) {
-        try(Statement statement = connect().createStatement()) {
-            statement.executeUpdate("INSERT INTO card(number, pin, balance) " +
-                    "VALUES('" + card.getNumber() +
-                    "', '" + card.getPin() +
-                    "', " + card.getBalance() + ");");
+        String sql = "INSERT INTO card (number, pin, balance) VALUES(?, ?, ?);";
+
+        try(PreparedStatement statement = connect().prepareStatement(sql)) {
+            statement.setString(1, card.getNumber());
+            statement.setString(2, card.getPin());
+            statement.setInt(3, card.getBalance());
+
+            statement.executeUpdate();
         } catch(SQLException e) {
             e.printStackTrace();
         }

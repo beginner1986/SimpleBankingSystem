@@ -92,7 +92,7 @@ public class Card {
         return pin;
     }
 
-    public double getBalance() {
+    public int getBalance() {
         return balance;
     }
 
