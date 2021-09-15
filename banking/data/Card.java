@@ -2,10 +2,11 @@ package banking.data;
 
 import java.util.Random;
 
-class Card {
+public class Card {
+    private int id;
     private String number;
     private String pin;
-    private double balance;
+    private int balance;
 
     public Card() {
         this.number = generateCardNumber();
@@ -78,6 +79,10 @@ class Card {
 
     public String getNumber() {
         return number;
+    }
+
+    public String getPin() {
+        return pin;
     }
 
     public double getBalance() {

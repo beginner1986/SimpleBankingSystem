@@ -1,26 +1,47 @@
 package banking.database;
 
+import banking.data.Card;
 import org.sqlite.SQLiteDataSource;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 public class Database {
+    private SQLiteDataSource dataSource;
+
     public Database(String url) {
-        SQLiteDataSource dataSource = new SQLiteDataSource();
+        this.dataSource = new SQLiteDataSource();
         dataSource.setUrl(url);
 
-        try(Connection connection = dataSource.getConnection()) {
-            if(!connection.isValid(5)) {
-                System.out.printf("Connection to %s failed!\n", url);
-                System.exit(0);
-            }
-
+        try(Connection connection = connect()) {
             createTable(connection);
+        } catch(SQLException e) {
+            e. printStackTrace();
+        }
+    }
+
+    public void insert(Card card) {
+        try(Statement statement = connect().createStatement()) {
+            statement.executeUpdate("INSERT INTO card(number, pin, balance) " +
+                    "VALUES('" + card.getNumber() +
+                    "', '" + card.getPin() +
+                    "', " + card.getBalance() + ");");
         } catch(SQLException e) {
             e.printStackTrace();
         }
+    }
+
+
+    private Connection connect() throws SQLException {
+        Connection connection = dataSource.getConnection();
+        if(!connection.isValid(5)) {
+            System.out.println("Connection to database failed!");
+            System.exit(0);
+        }
+
+        return connection;
     }
 
     private void createTable(Connection connection) {

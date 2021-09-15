@@ -15,9 +15,7 @@ public class Main {
         }
 
         String databaseUrl = "jdbc:sqlite:" + args[1];
-        Database db = new Database(databaseUrl);
-
-        Bank bank = new Bank();
+        Bank bank = new Bank(databaseUrl);
         boolean running = true;
         Scanner scanner = new Scanner(System.in);
         System.out.println("1. Create an account");

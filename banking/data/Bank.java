@@ -1,16 +1,15 @@
 package banking.data;
 
-import java.util.ArrayList;
-import java.util.List;
+import banking.database.Database;
 
 public class Bank {
-    private List<Card> cards;
+    Database database;
     private Status status;
     private LoginStage loginStage;
     private int currentCardIndex;
 
-    public Bank() {
-        this.cards = new ArrayList<>();
+    public Bank(String databaseUrl) {
+        this.database = new Database(databaseUrl);
         this.status = Status.MENU;
         this.loginStage = LoginStage.CARD_NUMBER;
     }
@@ -53,15 +52,13 @@ public class Bank {
 
     private void createAccount() {
         Card card = new Card();
-        cards.add(card);
-
-
+        database.insert(card);
     }
 
     private void login(String input) {
         switch(loginStage) {
             case CARD_NUMBER:
-                currentCardIndex = checkNumber(input);
+                //currentCardIndex = checkNumber(input);
                 loginStage = LoginStage.PIN;
                 break;
             case PIN:
@@ -82,17 +79,6 @@ public class Bank {
             default:
                 break;
         }
-    }
-
-    private int checkNumber(String input) {
-        for(int i=0; i<this.cards.size(); i++) {
-            String number = cards.get(i).getNumber();
-            if(number.equals(input)) {
-                return i;
-            }
-        }
-
-        return -1;
     }
 
     private void checkPin(String input) {
