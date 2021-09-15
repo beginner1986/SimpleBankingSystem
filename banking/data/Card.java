@@ -21,6 +21,13 @@ public class Card {
         System.out.println();
     }
 
+    public Card(int id, String number, String pin, int balance) {
+        this.id = id;
+        this.number = number;
+        this.pin = pin;
+        this.balance = balance;
+    }
+
     private String generateCardNumber() {
         StringBuilder sb = new StringBuilder();
         Random random = new Random();

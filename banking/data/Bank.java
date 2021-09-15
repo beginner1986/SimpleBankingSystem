@@ -6,7 +6,7 @@ public class Bank {
     Database database;
     private Status status;
     private LoginStage loginStage;
-    private int currentCardIndex;
+    private Card currentCard;
 
     public Bank(String databaseUrl) {
         this.database = new Database(databaseUrl);
@@ -58,14 +58,14 @@ public class Bank {
     private void login(String input) {
         switch(loginStage) {
             case CARD_NUMBER:
-                //currentCardIndex = checkNumber(input);
+                currentCard = database.getCardByNumber(input);
                 loginStage = LoginStage.PIN;
                 break;
             case PIN:
                 checkPin(input);
                 loginStage = LoginStage.CARD_NUMBER;
 
-                if(currentCardIndex == -1 || status != Status.AUTHORIZED) {
+                if(currentCard == null || status != Status.AUTHORIZED) {
                     System.out.println("Wrong card number or PIN!");
                     status = Status.MENU;
                 } else {
@@ -82,10 +82,10 @@ public class Bank {
     }
 
     private void checkPin(String input) {
-        if(currentCardIndex == -1) {
+        if(currentCard == null) {
             status = Status.MENU;
         } else {
-            if(cards.get(currentCardIndex).checkPin(input)) {
+            if(currentCard.checkPin(input)) {
                 status = Status.AUTHORIZED;
             } else {
                 status = Status.MENU;
@@ -96,10 +96,11 @@ public class Bank {
     private void operations(String input) {
         switch(input) {
             case "1":
-                System.out.printf("Balance: %f\n", cards.get(currentCardIndex).getBalance());
+                System.out.printf("Balance: %f\n", currentCard.getBalance());
                 break;
             case "2":
                 status = Status.MENU;
+                currentCard = null;
                 System.out.println("You have successfully logged out!\n");
                 System.out.println("1. Create an account");
                 System.out.println("2. Log into account");

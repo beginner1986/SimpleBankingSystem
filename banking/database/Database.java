@@ -33,6 +33,25 @@ public class Database {
         }
     }
 
+    public Card getCardByNumber(String number) {
+        Card card = null;
+
+        try(Statement statement = connect().createStatement()) {
+            try(ResultSet result = statement.executeQuery("SELECT * " +
+                    "FROM card " +
+                    "WHERE number=" + number)) {
+                int id = result.getInt("id");
+                String pin = result.getString("pin");
+                int balance = result.getInt("balance");
+
+                card = new Card(id, number, pin, balance);
+            }
+        } catch(SQLException e) {
+            e.printStackTrace();
+        }
+
+        return card;
+    }
 
     private Connection connect() throws SQLException {
         Connection connection = dataSource.getConnection();
