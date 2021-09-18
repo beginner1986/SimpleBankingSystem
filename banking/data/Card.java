@@ -96,4 +96,7 @@ public class Card {
         return balance;
     }
 
+    public void setBalance(int newBalance) {
+        this.balance = newBalance;
+    }
 }

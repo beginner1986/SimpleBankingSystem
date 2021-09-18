@@ -4,6 +4,7 @@ import banking.data.Card;
 import org.sqlite.SQLiteDataSource;
 
 import java.sql.*;
+import java.util.Scanner;
 
 public class Database {
     private SQLiteDataSource dataSource;
@@ -83,5 +84,53 @@ public class Database {
         } catch(SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public int addIncome(String number) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter income:");
+        int income = scanner.nextInt();
+        int newBalance = income;
+
+        String getBalanceSql = "SELECT balance FROM card WHERE number = ?";
+        String updateBalanceSql = "UPDATE card SET balance = ? WHERE number = ?";
+
+        try(Connection connection = connect();
+            PreparedStatement getBalance = connection.prepareStatement(getBalanceSql);
+            PreparedStatement updateBalance = connection.prepareStatement(updateBalanceSql
+        )) {
+            connection.setAutoCommit(false);
+
+            getBalance.setString(1, number);
+            ResultSet result = getBalance.executeQuery();
+
+            newBalance = result.getInt("balance") + income;
+
+            updateBalance.setInt(1, newBalance);
+            updateBalance.setString(2, number);
+            updateBalance.executeUpdate();
+
+            connection.commit();
+        } catch(SQLException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Income was added!");
+        return newBalance;
+    }
+
+    public int getBalanceByNumber(String number) {
+        String sql = "SELECT balance FROM card WHERE number = ?;";
+        int balance = 0;
+
+        try(PreparedStatement statement = connect().prepareStatement(sql)) {
+            statement.setString(1, number);
+            ResultSet result = statement.executeQuery();
+            balance = result.getInt("balance");
+        } catch(SQLException e) {
+            e.printStackTrace();
+        }
+
+        return balance;
     }
 }

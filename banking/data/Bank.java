@@ -69,14 +69,7 @@ public class Bank {
                     System.out.println("Wrong card number or PIN!");
                     status = Status.MENU;
                 } else {
-                    System.out.println("You have successfully logged in!");
-                    System.out.println();
-                    System.out.println("1. Balance");
-                    System.out.println("2. Add income");
-                    System.out.println("3. Do transfer");
-                    System.out.println("4. Close account");
-                    System.out.println("2. Log out");
-                    System.out.println("0. Exit");
+                    showMenuForLoggedUser();
                 }
                 break;
             default:
@@ -101,11 +94,18 @@ public class Bank {
     private void operations(String input) {
         switch(input) {
             case "1":
+                int newBalance = database.getBalanceByNumber(currentCard.getNumber());
+                currentCard.setBalance(newBalance);
                 System.out.printf("Balance: %d\n", currentCard.getBalance());
+                showMenuForLoggedUser();
                 break;
             case "2":
+                newBalance = database.addIncome(currentCard.getNumber());
+                currentCard.setBalance(newBalance);
+                showMenuForLoggedUser();
                 break;
             case "3":
+                showMenuForLoggedUser();
                 break;
             case "4":
                 database.deleteCardByNumber(currentCard.getNumber());
@@ -123,5 +123,16 @@ public class Bank {
             default:
                 break;
         }
+    }
+
+    private void showMenuForLoggedUser() {
+        System.out.println("You have successfully logged in!");
+        System.out.println();
+        System.out.println("1. Balance");
+        System.out.println("2. Add income");
+        System.out.println("3. Do transfer");
+        System.out.println("4. Close account");
+        System.out.println("2. Log out");
+        System.out.println("0. Exit");
     }
 }
