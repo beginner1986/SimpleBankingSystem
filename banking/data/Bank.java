@@ -85,6 +85,8 @@ public class Bank {
     }
 
     private void checkPin(String input) {
+        System.out.println("Enter your PIN number:");
+
         if(currentCard == null) {
             status = Status.MENU;
         } else {
@@ -106,6 +108,9 @@ public class Bank {
             case "3":
                 break;
             case "4":
+                database.deleteCardByNumber(currentCard.getNumber());
+                System.out.printf("The account has been closed!\n");
+                status = Status.MENU;
                 break;
             case "5":
                 status = Status.MENU;

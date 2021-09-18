@@ -74,4 +74,14 @@ public class Database {
             e.printStackTrace();
         }
     }
+
+    public void deleteCardByNumber(String number) {
+        String sql = "DELETE FROM card WHERE number = " + number;
+
+        try(Statement statement = connect().createStatement()) {
+            statement.executeUpdate(sql);
+        } catch(SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
