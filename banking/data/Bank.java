@@ -72,6 +72,9 @@ public class Bank {
                     System.out.println("You have successfully logged in!");
                     System.out.println();
                     System.out.println("1. Balance");
+                    System.out.println("2. Add income");
+                    System.out.println("3. Do transfer");
+                    System.out.println("4. Close account");
                     System.out.println("2. Log out");
                     System.out.println("0. Exit");
                 }
@@ -99,6 +102,12 @@ public class Bank {
                 System.out.printf("Balance: %d\n", currentCard.getBalance());
                 break;
             case "2":
+                break;
+            case "3":
+                break;
+            case "4":
+                break;
+            case "5":
                 status = Status.MENU;
                 currentCard = null;
                 System.out.println("You have successfully logged out!\n");
