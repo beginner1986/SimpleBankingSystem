@@ -69,6 +69,7 @@ public class Bank {
                     System.out.println("Wrong card number or PIN!");
                     status = Status.MENU;
                 } else {
+                    System.out.println("You have successfully logged in!");
                     showMenuForLoggedUser();
                 }
                 break;
@@ -105,6 +106,8 @@ public class Bank {
                 showMenuForLoggedUser();
                 break;
             case "3":
+                newBalance = database.doTransfer(currentCard.getNumber());
+                currentCard.setBalance(newBalance);
                 showMenuForLoggedUser();
                 break;
             case "4":
@@ -126,7 +129,6 @@ public class Bank {
     }
 
     private void showMenuForLoggedUser() {
-        System.out.println("You have successfully logged in!");
         System.out.println();
         System.out.println("1. Balance");
         System.out.println("2. Add income");

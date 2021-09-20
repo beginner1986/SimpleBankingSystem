@@ -5,6 +5,7 @@ import org.sqlite.SQLiteDataSource;
 
 import java.sql.*;
 import java.util.Scanner;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Database {
     private SQLiteDataSource dataSource;
@@ -41,6 +42,9 @@ public class Database {
             try(ResultSet result = statement.executeQuery("SELECT * " +
                     "FROM card " +
                     "WHERE number=" + number)) {
+                if(!result.next())
+                    return null;
+
                 int id = result.getInt("id");
                 String pin = result.getString("pin");
                 int balance = result.getInt("balance");
@@ -126,11 +130,103 @@ public class Database {
         try(PreparedStatement statement = connect().prepareStatement(sql)) {
             statement.setString(1, number);
             ResultSet result = statement.executeQuery();
+            if(!result.next())
+                return -1;
+
             balance = result.getInt("balance");
         } catch(SQLException e) {
             e.printStackTrace();
         }
 
         return balance;
+    }
+
+    public int doTransfer(String sourceAccount) {
+        Scanner scanner = new Scanner(System.in);
+        int balance = getBalanceByNumber(sourceAccount);
+
+        System.out.println("Transfer");
+        System.out.println("Enter card number:");
+        String destinationAccount = scanner.nextLine();
+
+        if(!isCardNumberValid(destinationAccount)) {
+            System.out.println("Probably you made a mistake in the card number. Please try again!");
+            return balance;
+        }
+
+        Card destinationCard = getCardByNumber(destinationAccount);
+        if(getBalanceByNumber(destinationAccount) < 0) {
+            System.out.println("Such a card does not exist.");
+            return balance;
+        }
+
+        if(destinationAccount.equals(sourceAccount)) {
+            System.out.println("You can't transfer money to the same account!");
+            return balance;
+        }
+
+        System.out.println("Enter how much money you want to transfer:");
+        int value = scanner.nextInt();
+
+        if(balance < value) {
+            System.out.println("Not enough money!");
+        } else {
+            balance = transferMoneyFromAccountToAnother(sourceAccount, destinationAccount, value);
+        }
+
+        return balance;
+    }
+
+    private int transferMoneyFromAccountToAnother(String sourceAccount, String destinationAccount, int value) {
+        int sourceBalance = getBalanceByNumber(sourceAccount);
+        int destinationBalance = getBalanceByNumber(destinationAccount);
+        String updateBalanceSql = "UPDATE card " +
+                "SET balance = ? " +
+                "WHERE number LIKE ?";
+
+        try(Connection connection = connect();
+            PreparedStatement takeMoney = connection.prepareStatement(updateBalanceSql);
+            PreparedStatement giveMoney = connection.prepareStatement(updateBalanceSql)
+        ) {
+            connection.setAutoCommit(false);
+
+            sourceBalance -= value;
+            takeMoney.setInt(1, sourceBalance);
+            takeMoney.setString(2, sourceAccount);
+            takeMoney.executeUpdate();
+
+            destinationBalance += value;
+            giveMoney.setInt(1, destinationBalance);
+            giveMoney.setString(2, destinationAccount);
+            giveMoney.executeUpdate();
+
+            connection.commit();
+        } catch(SQLException e) {
+            e.printStackTrace();
+        }
+
+        return sourceBalance;
+    }
+
+    private boolean isCardNumberValid(String number) {
+        int size = number.length();
+        int[] digits = new int[size];
+
+        for(int i=0; i<size; i++) {
+            digits[i] = Character.getNumericValue(number.charAt(i));
+        }
+
+        for(int i=0; i<size; i+=2) {
+            digits[i] *= 2;
+
+            if(digits[i] > 9)
+                digits[i] -= 9;
+        }
+
+        int sum = 0;
+        for(int d : digits)
+            sum += d;
+
+        return (sum % 10) == 0;
     }
 }
